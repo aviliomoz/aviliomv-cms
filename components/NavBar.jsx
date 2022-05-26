@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import NavBarItem from "./NavbarItem";
+import NavBarItem from "./NavBarItem";
 import NavBarLogo from "./NavBarLogo";
 import NavBarButton from "./NavBarButton";
 
