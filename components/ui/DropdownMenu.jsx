@@ -16,7 +16,7 @@ const DropdownMenu = ({ closeMenu, elements }) => {
     return () => {
       window.removeEventListener("click", checkOutsideClick);
     };
-  }, [loaded]);
+  }, [loaded, closeMenu]);
 
   useEffect(() => {
     setTimeout(() => {

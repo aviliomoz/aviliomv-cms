@@ -18,7 +18,7 @@ const PostCard = ({ post }) => {
       setPostData(data);
       setLoading(false);
     });
-  }, []);
+  }, [post.name]);
 
   if (loading) return <></>;
 
@@ -28,7 +28,11 @@ const PostCard = ({ post }) => {
         <div className="h-full w-1/5 bg-slate-200 flex justify-center items-center rounded-md overflow-hidden">
           <picture className="relative h-full w-full">
             <LoadingSpinner />
-            <Image src={getImageURL(postData.metadata.cover)} layout="fill" />
+            <Image
+              src={getImageURL(postData.metadata.cover)}
+              layout="fill"
+              alt={postData.metadata.cover}
+            />
           </picture>
         </div>
         <div className="h-full w-full px-4">

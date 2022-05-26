@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }) {
     function checkSessionChange() {
       if (!session && !loading) router.push("/login");
     },
-    [session]
+    [session, router, loading]
   );
 
   return <Component {...pageProps} />;

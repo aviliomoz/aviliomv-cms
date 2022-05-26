@@ -78,7 +78,7 @@ const PostEditorPage = () => {
           setLoading(false);
         });
     }
-  }, [id]);
+  }, [id, setPost]);
 
   if (loading)
     return (

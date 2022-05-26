@@ -42,13 +42,14 @@ const PostCreateModal = ({ closeModal, title }) => {
   useEffect(() => {
     if (formState.slug.match(/[^a-z_-]/g)) setValidSlug(false);
     if (!formState.slug.match(/[^a-z_-]/g)) setValidSlug(true);
-    console.log(validSlug);
-  }, [formState.slug]);
+  }, [formState.slug, validSlug]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    createPost("", { ...formState, tag, status: false }).then(() => closeModal());
+    createPost("", { ...formState, tag, status: false }).then(() =>
+      closeModal()
+    );
   };
 
   if (loading) return <></>;

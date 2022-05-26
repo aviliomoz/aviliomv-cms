@@ -20,7 +20,7 @@ const LoginPage = () => {
     function checkSessionChange() {
       if (session) router.push("/");
     },
-    [session]
+    [session, router]
   );
 
   const handleSubmit = async (e) => {

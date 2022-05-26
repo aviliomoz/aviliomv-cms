@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Utils
 import { getImageURL } from "../utils/images";
@@ -34,7 +34,7 @@ const ImageCard = ({
       <div className="h-4/6 w-full bg-slate-200 flex justify-center items-center rounded-md overflow-hidden">
         <picture className="relative h-full w-full cursor-pointer">
           <LoadingSpinner />
-          <Image src={getImageURL(image.name)} layout="fill" />
+          <Image src={getImageURL(image.name)} layout="fill" alt={image.name} />
         </picture>
       </div>
       <div className=" h-2/6 w-full flex items-center justify-center text-center">

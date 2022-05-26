@@ -20,7 +20,7 @@ const TagCard = ({ tag }) => {
     return () => {
       clearTimeout(closeUpdatedCheck);
     };
-  }, [updated]);
+  }, [updated, loading]);
 
   return (
     <article className="relative group shadow-md rounded-md p-4 border-[1px] border-black w-[calc((100%-80px)/5)] cursor-pointer mr-4 mb-4">
