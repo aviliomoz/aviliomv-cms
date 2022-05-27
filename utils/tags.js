@@ -15,6 +15,22 @@ export const getTags = async () => {
   }
 };
 
+export const getTagNameById = async (id) => {
+  try {
+    let { data: tag, error } = await supabase
+      .from("tags")
+      .select("title")
+      .eq("id", id)
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    return tag;
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
 export const updateTag = async (tag) => {
   try {
     const { data, error } = await supabase

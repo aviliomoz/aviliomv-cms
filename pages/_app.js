@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
 
 import "../styles/globals.css";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -26,6 +27,13 @@ function MyApp({ Component, pageProps }) {
     },
     [session, router, loading]
   );
+
+  if (loading)
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <LoadingSpinner />
+      </div>
+    );
 
   return <Component {...pageProps} />;
 }

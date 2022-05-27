@@ -5,13 +5,18 @@ import { useEffect, useState } from "react";
 // Utils
 import { getImageURL } from "../utils/images";
 import { getPostData } from "../utils/posts";
+import { getTagNameById } from "../utils/tags";
 
 // Components
 import LoadingSpinner from "./ui/LoadingSpinner";
 
+// Icons
+import { VscTag } from "react-icons/vsc";
+
 const PostCard = ({ post }) => {
   const [loading, setLoading] = useState(true);
   const [postData, setPostData] = useState({ content: null, metadata: null });
+  const [tagName, setTagName] = useState("");
 
   useEffect(() => {
     getPostData(post.name).then((data) => {
@@ -19,6 +24,13 @@ const PostCard = ({ post }) => {
       setLoading(false);
     });
   }, [post.name]);
+
+  useEffect(() => {
+    if (postData.metadata)
+      getTagNameById(postData.metadata.tag).then((tag) =>
+        setTagName(tag.title)
+      );
+  }, [postData.metadata]);
 
   if (loading) return <></>;
 
@@ -42,7 +54,10 @@ const PostCard = ({ post }) => {
           <p>{postData.metadata.description}</p>
           <p>{postData.metadata.slug}</p>
           <p>{postData.metadata.date}</p>
-          <p>{postData.metadata.tag}</p>
+          <p className="flex space-x-2 items-center">
+            <VscTag />
+            <span>{tagName}</span>
+          </p>
           {postData.metadata.status ? (
             <span className="bg-green-300 text-green-900 px-2 py-[2px] text-sm font-medium rounded-md absolute bottom-4 right-4">
               Activo

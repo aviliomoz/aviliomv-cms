@@ -1,15 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 // Utils
 import { useAutosave } from "../../hooks/useAutosave";
 import { getPostData, getPosts, updatePost } from "../../utils/posts";
+import { getTags } from "../../utils/tags";
+import { ReactMarkdownConfig } from "../../utils/markdown";
 
 // Components
 import Layout from "../../components/Layout";
-import { getTags } from "../../utils/tags";
-import { ReactMarkdownConfig } from "../../utils/markdown";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 const PostEditorPage = () => {
@@ -191,6 +193,8 @@ const PostEditorPage = () => {
             <ReactMarkdown
               components={ReactMarkdownConfig}
               className="w-full max-h-full p-2 overflow-y-scroll"
+              remarkPlugins={[remarkMath]}
+              rehypePlugins={[rehypeKatex]}
             >
               {post.content}
             </ReactMarkdown>
