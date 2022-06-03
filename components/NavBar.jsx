@@ -5,7 +5,7 @@ import NavBarLogo from "./NavBarLogo";
 import NavBarButton from "./NavBarButton";
 
 // Icons
-import { VscFiles, VscTag, VscSignOut, VscDeviceCamera } from "react-icons/vsc";
+import { VscFiles, VscSignOut, VscDeviceCamera } from "react-icons/vsc";
 import { supabase } from "../utils/supabase";
 
 // Items
@@ -19,11 +19,6 @@ const items = [
     title: "Imágenes",
     route: "/images",
     icon: <VscDeviceCamera className="navbar-icon" />,
-  },
-  {
-    title: "Etiquetas",
-    route: "/tags",
-    icon: <VscTag className="navbar-icon" />,
   },
 ];
 

@@ -7,12 +7,20 @@ export const useAutosave = (
 ) => {
   const [oldData, setOldData] = useState(initialState);
   const [data, setData] = useState(initialState);
+  const [updated, setUpdated] = useState(true);
 
   useEffect(() => {
+    if (data !== oldData) {
+      setUpdated(false);
+    } else {
+      setUpdated(true);
+    }
+
     let onSaveTimeout = setTimeout(() => {
-      if (data != oldData) {
+      if (data !== oldData) {
         callback(data);
         setOldData(data);
+        setUpdated(true);
       }
     }, debounce);
 
@@ -21,5 +29,10 @@ export const useAutosave = (
     };
   }, [data]);
 
-  return { data, setData, updated: data === oldData };
+  const setInitialData = (data) => {
+    setData(data);
+    setOldData(data);
+  };
+
+  return { data, setData, updated, setInitialData };
 };

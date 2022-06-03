@@ -6,8 +6,7 @@ import rehypeKatex from "rehype-katex";
 
 // Utils
 import { useAutosave } from "../../hooks/useAutosave";
-import { getPostData, getPosts, updatePost } from "../../utils/posts";
-import { getTags } from "../../utils/tags";
+import { getPostByID, updatePost } from "../../utils/posts";
 import { ReactMarkdownConfig } from "../../utils/markdown";
 
 // Components
@@ -19,32 +18,25 @@ const PostEditorPage = () => {
   const { id } = router.query;
 
   const [loading, setLoading] = useState(true);
-  const [tags, setTags] = useState([]);
 
   const {
     data: post,
     setData: setPost,
     updated,
-  } = useAutosave({ name: "", data: {}, content: "" }, updatePost, 4000);
+    setInitialData,
+  } = useAutosave({}, updatePost, 4000);
 
   const handleChangeOnMetadata = (e) => {
     setPost({
       ...post,
-      data: { ...post.data, [e.target.name]: e.target.value },
-    });
-  };
-
-  const handleChangeTag = (e) => {
-    setPost({
-      ...post,
-      data: { ...post.data, tag: e.target.value },
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleChangeStatus = (e) => {
     setPost({
       ...post,
-      data: { ...post.data, status: e.target.checked },
+      status: e.target.checked,
     });
   };
 
@@ -57,30 +49,12 @@ const PostEditorPage = () => {
 
   useEffect(() => {
     if (id) {
-      getPosts()
-        .then((data) => data.filter((post) => post.id === id))
-        .then((post) => getPostData(post[0].name))
-        .then((markdown) => {
-          setPost({
-            name: `${markdown.metadata.slug}.md`,
-            data: {
-              title: markdown.metadata.title,
-              description: markdown.metadata.description,
-              slug: markdown.metadata.slug,
-              cover: markdown.metadata.cover,
-              date: markdown.metadata.date,
-              tag: markdown.metadata.tag,
-              status: markdown.metadata.status,
-            },
-            content: markdown.content,
-          });
-
-          getTags().then(setTags);
-
-          setLoading(false);
-        });
+      getPostByID(id).then((post) => {
+        setInitialData(post);
+        setLoading(false);
+      });
     }
-  }, [id, setPost]);
+  }, [id]);
 
   if (loading)
     return (
@@ -99,7 +73,7 @@ const PostEditorPage = () => {
             Título:{" "}
             <input
               type="text"
-              value={post.data.title}
+              value={post.title}
               name="title"
               onChange={handleChangeOnMetadata}
               className="font-bold w-full outline-none ml-2"
@@ -114,11 +88,11 @@ const PostEditorPage = () => {
             <label className="ml-4">
               <input
                 type={"checkbox"}
-                checked={post.data.status}
+                checked={post.status}
                 onChange={handleChangeStatus}
                 className="mr-2"
               />
-              {post.data.status ? "Activo" : "Oculto"}
+              {post.status ? "Activo" : "Oculto"}
             </label>
           </div>
         </div>
@@ -128,7 +102,7 @@ const PostEditorPage = () => {
               Descripción:{" "}
               <textarea
                 type="text"
-                value={post.data.description}
+                value={post.description}
                 name="description"
                 onChange={handleChangeOnMetadata}
                 className="mb-2 w-full resize-none min-h-[120px] border-[1px] rounded-md p-1 outline-none"
@@ -138,10 +112,9 @@ const PostEditorPage = () => {
               Slug:{" "}
               <input
                 type="text"
-                value={post.data.slug}
+                value={post.slug}
                 name="slug"
                 onChange={handleChangeOnMetadata}
-                disabled
                 className="mb-2 w-full border-[1px] rounded-md p-1 outline-none"
               />
             </label>
@@ -149,7 +122,7 @@ const PostEditorPage = () => {
               Imagen:{" "}
               <input
                 type="text"
-                value={post.data.cover}
+                value={post.cover}
                 name="cover"
                 onChange={handleChangeOnMetadata}
                 className="mb-2 w-full border-[1px] rounded-md p-1 outline-none"
@@ -159,27 +132,11 @@ const PostEditorPage = () => {
               Fecha:{" "}
               <input
                 type="text"
-                value={post.data.date}
+                value={post.date}
                 name="date"
                 onChange={handleChangeOnMetadata}
                 className="mb-2 w-full border-[1px] rounded-md p-1 outline-none"
               />
-            </label>
-            <label className="font-semibold">
-              Etiqueta:{" "}
-              <select
-                onChange={handleChangeTag}
-                value={post.data.tag}
-                className="mb-2 w-full border-[1px] rounded-md p-1 outline-none"
-              >
-                {tags.map((tag) => {
-                  return (
-                    <option key={tag.id} value={tag.id}>
-                      {tag.title}
-                    </option>
-                  );
-                })}
-              </select>
             </label>
           </section>
           <section className="w-5/12 h-[calc(100vh-140px)] border-[1px] border-black shadow-md rounded-md overflow-hidden">

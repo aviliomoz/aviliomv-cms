@@ -1,10 +1,9 @@
 import { supabase } from "./supabase";
-import matter from "gray-matter";
 import { filenameValidator } from "./validators";
 
 export const getPosts = async () => {
   try {
-    const { data: posts, error } = await supabase.storage.from("posts").list();
+    const { data: posts, error } = await supabase.from("posts").select();
 
     return posts;
   } catch (error) {
@@ -12,40 +11,28 @@ export const getPosts = async () => {
   }
 };
 
-export const getPostURL = (post) => {
-  const { publicURL, error } = supabase.storage
-    .from("posts")
-    .getPublicUrl(post);
-
-  return publicURL;
-};
-
-export const getPostData = async (postName) => {
+export const getPostByID = async (id) => {
   try {
-    const { data, error } = await supabase.storage
+    const { data: post, error } = await supabase
       .from("posts")
-      .download(postName);
+      .select()
+      .eq("id", id)
+      .single();
 
     if (error) throw new Error(error.message);
 
-    const markdown = await data.text();
-
-    const { content, data: metadata } = matter(markdown);
-
-    return { content, metadata };
+    return post;
   } catch (error) {
     alert(error.message);
   }
 };
 
-export const createPost = async (content, metadata) => {
+export const createPost = async (post) => {
   try {
-    if (!filenameValidator(metadata.slug).validated)
-      throw new Error(filenameValidator(metadata.slug).message);
+    if (!filenameValidator(post.slug).validated)
+      throw new Error(filenameValidator(post.slug).message);
 
-    const { data, error } = await supabase.storage
-      .from("posts")
-      .upload(metadata.slug + ".md", matter.stringify(content, metadata));
+    const { data, error } = await supabase.from("posts").insert([post]);
 
     if (error) throw new Error(error);
 
@@ -55,11 +42,12 @@ export const createPost = async (content, metadata) => {
   }
 };
 
-export const togglePostStatus = async (post, newData) => {
+export const togglePostStatus = async (id, newStatus) => {
   try {
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabase
       .from("posts")
-      .update(post.name, newData);
+      .update({ status: newStatus })
+      .match({ id: id });
 
     if (error) throw new Error(error.message);
   } catch (error) {
@@ -67,15 +55,12 @@ export const togglePostStatus = async (post, newData) => {
   }
 };
 
-export const updatePost = async (post) => {
-  // {name: String, data: {}, content: String}
-
+export const updatePost = async (newPost) => {
   try {
-    if (!post.name) return;
-
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabase
       .from("posts")
-      .update(post.name, matter.stringify(post.content, post.data));
+      .update({ ...newPost })
+      .match({ id: newPost.id });
 
     if (error) throw new Error(error.message);
   } catch (error) {

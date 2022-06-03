@@ -4,36 +4,12 @@ import { useEffect, useState } from "react";
 
 // Utils
 import { getImageURL } from "../utils/images";
-import { getPostData } from "../utils/posts";
-import { getTagNameById } from "../utils/tags";
+import { getPostByID } from "../utils/posts";
 
 // Components
 import LoadingSpinner from "./ui/LoadingSpinner";
 
-// Icons
-import { VscTag } from "react-icons/vsc";
-
 const PostCard = ({ post }) => {
-  const [loading, setLoading] = useState(true);
-  const [postData, setPostData] = useState({ content: null, metadata: null });
-  const [tagName, setTagName] = useState("");
-
-  useEffect(() => {
-    getPostData(post.name).then((data) => {
-      setPostData(data);
-      setLoading(false);
-    });
-  }, [post.name]);
-
-  useEffect(() => {
-    if (postData.metadata)
-      getTagNameById(postData.metadata.tag).then((tag) =>
-        setTagName(tag.title)
-      );
-  }, [postData.metadata]);
-
-  if (loading) return <></>;
-
   return (
     <Link href={`/posts/${post.id}`}>
       <a className="relative flex group shadow-md rounded-md p-4 border-[1px] border-black w-full cursor-pointer mb-4 h-[180px]">
@@ -41,24 +17,18 @@ const PostCard = ({ post }) => {
           <picture className="relative h-full w-full">
             <LoadingSpinner />
             <Image
-              src={getImageURL(postData.metadata.cover)}
+              src={getImageURL(post.cover)}
               layout="fill"
-              alt={postData.metadata.cover}
+              alt={post.cover}
             />
           </picture>
         </div>
         <div className="h-full w-full px-4">
-          <h3 className="font-semibold text-2xl truncate">
-            {postData.metadata.title}
-          </h3>
-          <p>{postData.metadata.description}</p>
-          <p>{postData.metadata.slug}</p>
-          <p>{postData.metadata.date}</p>
-          <p className="flex space-x-2 items-center">
-            <VscTag />
-            <span>{tagName}</span>
-          </p>
-          {postData.metadata.status ? (
+          <h3 className="font-semibold text-2xl truncate">{post.title}</h3>
+          <p>{post.description}</p>
+          <p>{post.slug}</p>
+          <p>{post.date}</p>
+          {post.status ? (
             <span className="bg-green-300 text-green-900 px-2 py-[2px] text-sm font-medium rounded-md absolute bottom-4 right-4">
               Activo
             </span>

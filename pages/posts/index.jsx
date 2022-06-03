@@ -1,7 +1,9 @@
+import moment from "moment";
 import { useEffect, useState } from "react";
 
 // Utils
 import { getPosts } from "../../utils/posts";
+import { supabase } from "../../utils/supabase";
 
 // Components
 import Layout from "../../components/Layout";
@@ -13,6 +15,19 @@ import LoadingSpinner from "../../components/ui/LoadingSpinner";
 const PostsPage = () => {
   const [posts, setPosts] = useState(null);
   const [modal, setModal] = useState(false);
+
+  useEffect(() => {
+    const updatePostSubscription = supabase
+      .from("posts")
+      .on("*", () => {
+        getPosts().then(setPosts);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeSubscription(updatePostSubscription);
+    };
+  }, []);
 
   useEffect(() => {
     getPosts().then(setPosts);
@@ -30,9 +45,15 @@ const PostsPage = () => {
   return (
     <Layout title={"Artículos"}>
       <div className="w-full flex flex-col">
-        {posts.map((post) => {
-          return <PostCard key={post.id} post={post} />;
-        })}
+        {posts
+          .sort(
+            (a, b) =>
+              Number(moment(b.date, "DD/MM/YYYY")) -
+              Number(moment(a.date, "DD/MM/YYYY"))
+          )
+          .map((post) => {
+            return <PostCard key={post.id} post={post} />;
+          })}
       </div>
       <FloatingButton title={"Nuevo post"} openModal={() => setModal(true)} />
       {modal && (

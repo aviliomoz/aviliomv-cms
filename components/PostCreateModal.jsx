@@ -1,15 +1,16 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
+
+// Utils
 import { useForm } from "../hooks/useForm";
 import { createPost } from "../utils/posts";
-import { getTags } from "../utils/tags";
+
+// Components
 import Modal from "./ui/Modal";
 
 const PostCreateModal = ({ closeModal, title }) => {
-  const [tags, setTags] = useState([]);
-  const [tag, setTag] = useState("");
-  const [loading, setLoading] = useState(true);
   const [validSlug, setValidSlug] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const { formState, onInputChange } = useForm({
     title: "",
@@ -32,14 +33,6 @@ const PostCreateModal = ({ closeModal, title }) => {
   ];
 
   useEffect(() => {
-    getTags().then((data) => {
-      setTag(data[0].id);
-      setTags(data);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
     if (formState.slug.match(/[^a-z_-]/g)) setValidSlug(false);
     if (!formState.slug.match(/[^a-z_-]/g)) setValidSlug(true);
   }, [formState.slug, validSlug]);
@@ -47,12 +40,13 @@ const PostCreateModal = ({ closeModal, title }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    createPost("", { ...formState, tag, status: false }).then(() =>
-      closeModal()
-    );
-  };
+    setLoading(true);
 
-  if (loading) return <></>;
+    createPost({ ...formState, content: "" }).then(() => {
+      setLoading(false);
+      closeModal();
+    });
+  };
 
   return (
     <Modal closeModal={closeModal}>
@@ -74,28 +68,21 @@ const PostCreateModal = ({ closeModal, title }) => {
             </label>
           );
         })}
-        <label className="flex mb-12">
-          Etiqueta:{" "}
-          <select
-            name={"tag"}
-            id="tag"
-            className="border-b focus:outline-none w-full ml-2 mb-1"
-            onChange={(e) => setTag(e.target.value)}
-            value={tag}
-          >
-            {tags.map((tag) => (
-              <option key={tag.id} value={tag.id}>
-                {tag.title}
-              </option>
-            ))}
-          </select>
-        </label>
+
+        <div className="h-12"></div>
+
         <button
           className="absolute bottom-3 right-3 bg-black text-white rounded-md py-1 px-3 disabled:bg-opacity-50"
           type="submit"
-          disabled={!validSlug}
+          disabled={
+            !validSlug ||
+            !formState.title ||
+            !formState.description ||
+            !formState.slug ||
+            !formState.cover
+          }
         >
-          Crear post
+          {loading ? "Creando..." : "Crear post"}
         </button>
       </form>
       {!validSlug && (
