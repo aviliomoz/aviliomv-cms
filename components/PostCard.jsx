@@ -1,10 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 // Utils
 import { getImageURL } from "../utils/images";
-import { getPostByID } from "../utils/posts";
 
 // Components
 import LoadingSpinner from "./ui/LoadingSpinner";
