@@ -5,7 +5,13 @@ import NavBarLogo from "./NavBarLogo";
 import NavBarButton from "./NavBarButton";
 
 // Icons
-import { VscFiles, VscSignOut, VscDeviceCamera } from "react-icons/vsc";
+import {
+  VscFiles,
+  VscSignOut,
+  VscDeviceCamera,
+  VscGlobe,
+  VscExtensions,
+} from "react-icons/vsc";
 import { supabase } from "../utils/supabase";
 
 // Items
@@ -14,6 +20,16 @@ const items = [
     title: "Artículos",
     route: "/posts",
     icon: <VscFiles className="navbar-icon" />,
+  },
+  {
+    title: "Artículos externos",
+    route: "/external-posts",
+    icon: <VscGlobe className="navbar-icon" />,
+  },
+  {
+    title: "Proyectos",
+    route: "/projects",
+    icon: <VscExtensions className="navbar-icon" />,
   },
   {
     title: "Imágenes",
