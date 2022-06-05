@@ -6,6 +6,7 @@ const ProjectCard = ({ project }) => {
       <a className="relative flex flex-col shadow-md rounded-md p-4 border-[1px] border-black w-full cursor-pointer mb-4 h-[120px]">
         <h3 className="font-semibold text-xl truncate">{project.title}</h3>
         <p>Tipo: {project.type}</p>
+        <p>Año: {project.year}</p>
         {project.status ? (
           <span className="bg-green-300 text-green-900 px-2 py-[2px] text-sm font-medium rounded-md absolute bottom-4 right-4">
             Activo

@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import { useEffect, useState } from "react";
 
 // Utils
@@ -44,9 +46,15 @@ const ProjectsPage = () => {
   return (
     <Layout title={"Proyectos"}>
       <div className="w-full flex flex-col">
-        {projects.map((project) => {
-          return <ProjectCard key={project.id} project={project} />;
-        })}
+        {projects
+          .sort(
+            (a, b) =>
+              Number(moment(b.year, "YYYY")) -
+              Number(moment(a.year, "YYYY"))
+          )
+          .map((project) => {
+            return <ProjectCard key={project.id} project={project} />;
+          })}
       </div>
       <FloatingButton
         title={"Nuevo proyecto"}
